@@ -11,7 +11,7 @@ import ProjectsList from "./components/ProjectsList";
 import Contributions from "./components/Contributions";
 import ActivityLog from "./components/ActivityLog";
 
-const GITHUB_USER = "naimjamalullail";
+const GITHUB_USER = "AmadReally";
 
 export default function Home() {
   const [data, setData] = useState(null);
@@ -223,7 +223,7 @@ export default function Home() {
         </nav>
 
         <span className="micro-footer">
-          © 2026 NAIM JAMALULLAIL — POWERED BY MEMORYOFPLANET
+          © 2026 AMADREALLY — POWERED BY MEMORYOFPLANET
         </span>
       </div>
     </>

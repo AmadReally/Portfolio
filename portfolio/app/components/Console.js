@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Terminal } from "lucide-react";
 import { SnakeGame, RocketGame } from "./TerminalGames";
 
-const GITHUB_USER = "naimjamalullail";
+const GITHUB_USER = "AmadReally";
 const EMAIL = "naimjamalullail@gmail.com";
 
-const NEOFETCH_ART = `<span style="color:#a7c957;font-weight:700">     /\\      </span><span style="color:#ffffff">naim</span><span style="color:rgba(255,255,255,0.4)">@</span><span style="color:#a7c957">console</span>
+const NEOFETCH_ART = `<span style="color:#a7c957;font-weight:700">     /\\      </span><span style="color:#ffffff">AmadReally</span><span style="color:rgba(255,255,255,0.4)">@</span><span style="color:#a7c957">console</span>
 <span style="color:#a7c957;font-weight:700">    /  \\     </span><span style="color:rgba(255,255,255,0.5)">─────────────────</span>
 <span style="color:#a7c957;font-weight:700">   / /\\ \\    </span><span style="color:rgba(255,255,255,0.5)">OS:</span>     <span style="color:#fff">Windows 11 / Linux</span>
 <span style="color:#a7c957;font-weight:700">  / ____ \\   </span><span style="color:rgba(255,255,255,0.5)">Shell:</span>  <span style="color:#2dd4bf">zsh</span>
@@ -44,7 +44,7 @@ function buildResponse(cmd) {
     return [
       { type: "spacer" },
       { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ ABOUT ME ══╗</span>` },
-      { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">Hey, I'm <span style="color:#a7c957;font-weight:700">Naim Jamalullail</span> — a Full-Stack Developer</span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">Hey, I'm <span style="color:#a7c957;font-weight:700">Amad</span> — a Full-Stack Developer</span>` },
       { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">based in <span style="color:#2dd4bf">Malaysia</span>, passionate about building</span>` },
       { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">elegant web experiences and scalable systems.</span>` },
       { type: "spacer" },

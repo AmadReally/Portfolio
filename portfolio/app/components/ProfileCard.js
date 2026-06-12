@@ -11,7 +11,7 @@ const GithubIcon = ({ size = 13 }) => (
   </svg>
 );
 
-const GITHUB_USER = "naimjamalullail";
+const GITHUB_USER = "AmadReally";
 const EMAIL = "naimjamalullail@gmail.com";
 
 export default function ProfileCard({ profile }) {

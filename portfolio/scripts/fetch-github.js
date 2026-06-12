@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 
-const GITHUB_USER = "naimjamalullail";
+const GITHUB_USER = "AmadReally";
 const TOKEN = process.env.GITHUB_TOKEN || "";
 const OUT_DIR = path.join(__dirname, "../public/api");
 const OUT_FILE = path.join(OUT_DIR, "github.json");

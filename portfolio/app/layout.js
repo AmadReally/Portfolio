@@ -1,12 +1,12 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Naim Jamalullail | Console Portfolio",
+  title: "AmadReally | Console Portfolio",
   description:
-    "Interactive portfolio of Naim Jamalullail — a console & modern dashboard with GitHub API integration.",
+    "Interactive portfolio of AmadReally — a console & modern dashboard with GitHub API integration.",
   icons: {
-    icon: "https://github.com/naimjamalullail.png",
-    apple: "https://github.com/naimjamalullail.png",
+    icon: "https://github.com/AmadReally.png",
+    apple: "https://github.com/AmadReally.png",
   },
 };
 
