@@ -1,0 +1,375 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Terminal } from "lucide-react";
+import { SnakeGame, RocketGame } from "./TerminalGames";
+
+const GITHUB_USER = "naimjamalullail";
+const EMAIL = "naimjamalullail@gmail.com";
+
+const NEOFETCH_ART = `<span style="color:#a7c957;font-weight:700">     /\\      </span><span style="color:#ffffff">naim</span><span style="color:rgba(255,255,255,0.4)">@</span><span style="color:#a7c957">console</span>
+<span style="color:#a7c957;font-weight:700">    /  \\     </span><span style="color:rgba(255,255,255,0.5)">─────────────────</span>
+<span style="color:#a7c957;font-weight:700">   / /\\ \\    </span><span style="color:rgba(255,255,255,0.5)">OS:</span>     <span style="color:#fff">Windows 11 / Linux</span>
+<span style="color:#a7c957;font-weight:700">  / ____ \\   </span><span style="color:rgba(255,255,255,0.5)">Shell:</span>  <span style="color:#2dd4bf">zsh</span>
+<span style="color:#a7c957;font-weight:700"> /_/    \\_\\  </span><span style="color:rgba(255,255,255,0.5)">Editor:</span> <span style="color:#a78bfa">VS Code</span>
+<span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Theme:</span>  <span style="color:#7a2021">Cherry Dark</span>
+<span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Engine:</span> <span style="color:#a78bfa">Next.js 16</span>
+<span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Uptime:</span> <span style="color:#4ade80">99.9%</span>`;
+
+function buildResponse(cmd) {
+  const c = cmd.trim().toLowerCase();
+
+  if (c === "help") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ AVAILABLE COMMANDS ══╗</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">about</span>       <span style="color:rgba(255,255,255,0.55)">— Who I am</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">skills</span>      <span style="color:rgba(255,255,255,0.55)">— Tech stack & expertise</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">experience</span>  <span style="color:rgba(255,255,255,0.55)">— Work history</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">repos</span>       <span style="color:rgba(255,255,255,0.55)">— GitHub repositories</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">contact</span>     <span style="color:rgba(255,255,255,0.55)">— Get in touch</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">neofetch</span>    <span style="color:rgba(255,255,255,0.55)">— System information</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">status</span>      <span style="color:rgba(255,255,255,0.55)">— Server metrics</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">matrix</span>      <span style="color:rgba(255,255,255,0.55)">— Enter the matrix</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game snake</span>  <span style="color:rgba(255,255,255,0.55)">— Play Snake</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game rocket</span> <span style="color:rgba(255,255,255,0.55)">— Play Rocket Shooter</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">secret</span>      <span style="color:rgba(255,255,255,0.55)">— ???</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">clear</span>       <span style="color:rgba(255,255,255,0.55)">— Clear terminal</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "about") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ ABOUT ME ══╗</span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">Hey, I'm <span style="color:#a7c957;font-weight:700">Naim Jamalullail</span> — a Full-Stack Developer</span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">based in <span style="color:#2dd4bf">Malaysia</span>, passionate about building</span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.85)">elegant web experiences and scalable systems.</span>` },
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">I enjoy turning complex problems into clean,</span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">simple designs. Always shipping, always learning.</span>` },
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">→ Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('skills')">skills</span> to see my tech stack</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "skills") {
+    const skills = [
+      { name: "JavaScript / TypeScript", pct: 92, color: "#f7df1e" },
+      { name: "React / Next.js",         pct: 88, color: "#61dafb" },
+      { name: "Node.js / Express",        pct: 82, color: "#68a063" },
+      { name: "Python",                   pct: 75, color: "#3572a5" },
+      { name: "HTML / CSS / Tailwind",    pct: 90, color: "#e34c26" },
+      { name: "Git / GitHub",             pct: 85, color: "#f05032" },
+      { name: "SQL / NoSQL",              pct: 72, color: "#2dd4bf" },
+      { name: "Docker / CI-CD",           pct: 65, color: "#a78bfa" },
+    ];
+    const bars = skills.map((s) => {
+      const filled = Math.round(s.pct / 5);
+      const bar = "█".repeat(filled) + "░".repeat(20 - filled);
+      return {
+        type: "response",
+        html: `  <span style="color:${s.color};font-weight:600">${s.name.padEnd(28)}</span> <span style="color:${s.color};letter-spacing:-1px">${bar}</span> <span style="color:rgba(255,255,255,0.5)">${s.pct}%</span>`,
+      };
+    });
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ SKILLS & TECH STACK ══╗</span>` },
+      ...bars,
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "experience") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ EXPERIENCE ══╗</span>` },
+      { type: "response", html: `<span style="color:#fed931;font-weight:700">[ 2024 — Present ]</span>` },
+      { type: "response", html: `  <span style="color:#fff;font-weight:600">Full-Stack Developer</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Building production web apps with React, Next.js,</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">and Node.js backends.</span>` },
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#fed931;font-weight:700">[ 2022 — 2024 ]</span>` },
+      { type: "response", html: `  <span style="color:#fff;font-weight:600">Frontend Developer</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Crafting responsive UIs, component libraries,</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">and integrating REST/GraphQL APIs.</span>` },
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#fed931;font-weight:700">[ 2020 — 2022 ]</span>` },
+      { type: "response", html: `  <span style="color:#fff;font-weight:600">Computer Science Student</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Data structures, algorithms, software engineering</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">fundamentals. Lots of late-night coding sessions.</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "repos") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ GITHUB REPOS ══╗</span>` },
+      { type: "response", html: `  Check the <span style="color:#2dd4bf">Projects</span> panel on the right →` },
+      { type: "response", html: `  Or visit: <a href="https://github.com/${GITHUB_USER}" target="_blank" style="color:#a7c957;text-decoration:underline">github.com/${GITHUB_USER}</a>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "contact") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ CONTACT ══╗</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:600">Email</span>    <a href="mailto:${EMAIL}" style="color:#a7c957">${EMAIL}</a>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:600">GitHub</span>   <a href="https://github.com/${GITHUB_USER}" target="_blank" style="color:#a7c957">github.com/${GITHUB_USER}</a>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.4)">Open to collaborations, freelance, and full-time roles.</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "neofetch") {
+    return [
+      { type: "spacer" },
+      { type: "response", html: NEOFETCH_ART },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "status") {
+    const cpu = (12 + Math.random() * 40).toFixed(1);
+    const ram = (3.9 + Math.random() * 0.6).toFixed(2);
+    const net = (15 + Math.random() * 50).toFixed(2);
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ SERVER STATUS ══╗</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">CPU Load </span><span style="color:#fb7185;font-weight:700">${cpu}%</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Memory   </span><span style="color:#4ade80;font-weight:700">${ram} GiB</span> <span style="color:rgba(255,255,255,0.3)">/ 8.00 GiB</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Disk     </span><span style="color:#2dd4bf;font-weight:700">26.44 GiB</span> <span style="color:rgba(255,255,255,0.3)">/ 100 GiB</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Network  </span><span style="color:#fed931;font-weight:700">↓ ${net} KB/s</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Uptime   </span><span style="color:#4ade80;font-weight:700">99.9%</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "secret") {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$";
+    const msg = "KEEP BUILDING. KEEP SHIPPING.";
+    const encrypted = msg.split("").map(() => chars[Math.floor(Math.random() * chars.length)]).join("");
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.3);font-size:0.65rem">Decrypting message...</span>` },
+      { type: "response", html: `<span style="color:#a78bfa;font-weight:700;letter-spacing:2px">${encrypted}</span>` },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700;letter-spacing:2px">${msg}</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "matrix") {
+    const cols = 42;
+    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ";
+    const rows = Array.from({ length: 6 }, () =>
+      Array.from({ length: cols }, () => chars[Math.floor(Math.random() * chars.length)]).join("")
+    );
+    return [
+      { type: "spacer" },
+      ...rows.map((row, i) => ({
+        type: "response",
+        html: row.split("").map((ch) => {
+          const bright = Math.random() > 0.85;
+          const opacity = 0.15 + Math.random() * 0.7;
+          return `<span style="color:rgba(167,201,87,${opacity.toFixed(2)});font-weight:${bright ? 700 : 400}">${ch}</span>`;
+        }).join(""),
+      })),
+      { type: "spacer" },
+    ];
+  }
+
+  if (c === "clear") {
+    return [{ type: "clear" }];
+  }
+
+  if (c.startsWith("game ") || c === "game") {
+    const sub = c.split(" ")[1];
+    if (sub === "snake") return [{ type: "game", game: "snake" }];
+    if (sub === "rocket") return [{ type: "game", game: "rocket" }];
+    return [
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">Available games: <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('game snake')">game snake</span>  <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('game rocket')">game rocket</span></span>` },
+    ];
+  }
+
+  if (c === "") return [];
+
+  return [
+    { type: "response", html: `<span style="color:#f87171">Command not found: <b>${cmd}</b></span>` },
+    { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('help')">help</span> for available commands.</span>` },
+  ];
+}
+
+const WELCOME = [
+  { type: "welcome", text: `Welcome to Naim's Console Portfolio v4.0` },
+  { type: "hint", text: `Type 'help' or try 'neofetch' to get started.` },
+  { type: "spacer" },
+];
+
+export default function Console() {
+  const [lines, setLines] = useState(WELCOME);
+  const [input, setInput] = useState("");
+  const [minimized, setMinimized] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [histIdx, setHistIdx] = useState(-1);
+  const outputRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    window.__consoleExec = (cmd) => {
+      processCommand(cmd);
+    };
+    return () => { delete window.__consoleExec; };
+  }, []);
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (outputRef.current) outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }, 30);
+  };
+
+  const processCommand = (cmd) => {
+    const trimmed = cmd.trim();
+    const results = buildResponse(trimmed);
+
+    if (results[0]?.type === "clear") {
+      setLines(WELCOME);
+      return;
+    }
+
+    setLines((prev) => [
+      ...prev,
+      { type: "cmd", text: trimmed },
+      ...results,
+    ]);
+    if (trimmed) {
+      setHistory((h) => [trimmed, ...h.slice(0, 49)]);
+    }
+    setHistIdx(-1);
+    scrollToBottom();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    processCommand(input);
+    setInput("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const next = Math.min(histIdx + 1, history.length - 1);
+      setHistIdx(next);
+      setInput(history[next] ?? "");
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const next = Math.max(histIdx - 1, -1);
+      setHistIdx(next);
+      setInput(next === -1 ? "" : history[next] ?? "");
+    }
+  };
+
+  const [activeGame, setActiveGame] = useState(null);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [lines]);
+
+  return (
+    <motion.div
+      className="console-card crt-effect"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      onClick={() => inputRef.current?.focus()}
+    >
+      {/* Title bar */}
+      <div className="console-titlebar">
+        <div className="titlebar-dots">
+          <button className="titlebar-dot red" title="Close" onClick={(e) => { e.stopPropagation(); setLines(WELCOME); }} />
+          <button className="titlebar-dot yellow" title="Minimize" onClick={(e) => { e.stopPropagation(); setMinimized((v) => !v); }} />
+          <button className="titlebar-dot green" title="Maximize" onClick={(e) => e.stopPropagation()} />
+        </div>
+        <div className="titlebar-center">
+          <Terminal size={14} className="titlebar-icon" />
+          <span>naim@console — zsh</span>
+        </div>
+        <div style={{ width: 52 }} />
+      </div>
+
+      {/* Body */}
+      <AnimatePresence>
+        {!minimized && (
+          <motion.div
+            className="console-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1, flex: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            style={{ flex: 1, minHeight: 0 }}
+          >
+            <div className="console-output" ref={outputRef}>
+              {lines.map((line, i) => {
+                if (line.type === "spacer") return <div key={i} style={{ height: 4 }} />;
+                if (line.type === "welcome") return (
+                  <div key={i} className="console-line welcome">{line.text}</div>
+                );
+                if (line.type === "hint") return (
+                  <div key={i} className="console-line hint">{line.text}</div>
+                );
+                if (line.type === "cmd") return (
+                  <div key={i} className="console-line cmd">
+                    <span className="prompt-symbol">❯</span>
+                    <span className="cmd-text">{line.text}</span>
+                  </div>
+                );
+                if (line.type === "response") return (
+                  <div key={i} className="console-line response" dangerouslySetInnerHTML={{ __html: line.html }} />
+                );
+                if (line.type === "game") {
+                  if (line.game === "snake") return (
+                    <div key={i} className="console-line response">
+                      <SnakeGame onExit={() => {
+                        setLines((prev) => prev.filter((_, j) => j !== i));
+                        inputRef.current?.focus();
+                      }} />
+                    </div>
+                  );
+                  if (line.game === "rocket") return (
+                    <div key={i} className="console-line response">
+                      <RocketGame onExit={() => {
+                        setLines((prev) => prev.filter((_, j) => j !== i));
+                        inputRef.current?.focus();
+                      }} />
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSubmit} className="console-input-row">
+              <span className="prompt-symbol">❯</span>
+              <input
+                ref={inputRef}
+                className="console-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="type a command..."
+                autoComplete="off"
+                spellCheck={false}
+                autoFocus
+              />
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
