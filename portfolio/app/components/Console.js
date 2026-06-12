@@ -421,6 +421,15 @@ function Banner({ onExec }) {
         <span className="banner-blink">_</span>
       </div>
       <div className="banner-sub">Full-Stack Developer · Malaysia · v4.2</div>
+      <div className="banner-divider" />
+      <div className="banner-hint">
+        <span className="banner-hint-prompt">❯</span>
+        type{" "}
+        <button className="banner-help-btn" onClick={() => onExec("help")}>
+          help
+        </button>
+        {" "}to explore all commands
+      </div>
     </div>
   );
 }
