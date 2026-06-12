@@ -725,6 +725,70 @@ ul, ol { list-style: none; }
 .activity-commit-sha { color: var(--terminal-green); font-weight: 600; background: rgba(167,201,87,0.15); padding: 0 4px; border-radius: 3px; flex-shrink: 0; }
 .activity-commit-msg { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* ── Console Banner & Quickstart ────────────────────────────── */
+.console-banner { padding: 8px 4px 6px; }
+.banner-title { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; letter-spacing: 0.04em; line-height: 1; margin-bottom: 5px; }
+.banner-blink { color: var(--terminal-green); animation: cursorBlink 1s step-end infinite; }
+@keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+.banner-sub { font-family: var(--font-mono); font-size: 0.58rem; color: rgba(255,248,247,0.4); letter-spacing: 0.04em; }
+
+.quickstart-row { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
+.quickstart-label { font-family: var(--font-mono); font-size: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,248,247,0.25); }
+.quickstart-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.quickstart-chip {
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+  padding: 4px 9px; border-radius: 4px; cursor: pointer; border: none;
+  background: rgba(255,248,247,0.05);
+  color: var(--chip-color, rgba(255,248,247,0.6));
+  border: 1px solid rgba(255,248,247,0.08);
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.quickstart-chip:hover {
+  background: color-mix(in srgb, var(--chip-color) 15%, transparent);
+  border-color: color-mix(in srgb, var(--chip-color) 50%, transparent);
+  transform: translateY(-1px);
+}
+.quickstart-chip:active { transform: translateY(0); }
+
+/* ── Help Panel ──────────────────────────────────────────────── */
+.help-panel { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 6px; }
+.help-title { font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,248,247,0.25); margin-bottom: -4px; }
+.help-category { display: flex; flex-direction: column; gap: 6px; }
+.help-cat-header { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.help-cat-icon { font-size: 0.65rem; }
+.help-cmds { display: flex; flex-wrap: wrap; gap: 5px; }
+.help-cmd-btn {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 6px 10px; border-radius: 6px; cursor: pointer;
+  background: rgba(255,248,247,0.04);
+  border: 1px solid rgba(255,248,247,0.08);
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  text-align: left;
+}
+.help-cmd-btn:hover {
+  background: color-mix(in srgb, var(--cat-color) 12%, transparent);
+  border-color: color-mix(in srgb, var(--cat-color) 40%, transparent);
+  transform: translateY(-1px);
+}
+.help-cmd-btn:active { transform: translateY(0); }
+.help-cmd-name { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; }
+.help-cmd-desc { font-family: var(--font-mono); font-size: 0.5rem; color: rgba(255,248,247,0.4); }
+
+/* ── Chips ───────────────────────────────────────────────────── */
+.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.chips-label { font-family: var(--font-mono); font-size: 0.52rem; color: rgba(255,248,247,0.35); margin-right: 2px; }
+.chip-btn {
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px; cursor: pointer;
+  background: rgba(167,201,87,0.08); color: #a7c957;
+  border: 1px solid rgba(167,201,87,0.2);
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.chip-btn:hover { background: rgba(167,201,87,0.18); border-color: rgba(167,201,87,0.45); transform: translateY(-1px); }
+.chip-btn:active { transform: translateY(0); }
+
 /* ── Now Playing Widget ─────────────────────────────────────── */
 .nowplaying-widget { padding: 12px 14px; }
 .nowplaying-widget .widget-header { letter-spacing: 0.08em; }

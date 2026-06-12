@@ -17,6 +17,7 @@ const NEOFETCH_ART = `<span style="color:#a7c957;font-weight:700">     /\\      
 <span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Engine:</span> <span style="color:#a78bfa">Next.js 16</span>
 <span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Uptime:</span> <span style="color:#4ade80">99.9%</span>`;
 
+/* ── Markdown helpers ─────────────────────────────────────────── */
 function renderMdInline(text) {
   let t = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   t = t.replace(/\*\*(.+?)\*\*/g, '<span style="color:#fff;font-weight:700">$1</span>');
@@ -52,29 +53,70 @@ function renderMarkdown(md) {
   return result;
 }
 
+/* ── Help categories ─────────────────────────────────────────── */
+const HELP_CATEGORIES = [
+  {
+    id: "identity",
+    label: "Identity",
+    color: "#a7c957",
+    icon: "◈",
+    commands: [
+      { cmd: "about",      desc: "Who I am" },
+      { cmd: "skills",     desc: "Tech stack" },
+      { cmd: "experience", desc: "Work history" },
+      { cmd: "contact",    desc: "Get in touch" },
+    ],
+  },
+  {
+    id: "system",
+    label: "System",
+    color: "#2dd4bf",
+    icon: "◉",
+    commands: [
+      { cmd: "neofetch", desc: "System info" },
+      { cmd: "status",   desc: "Live metrics" },
+      { cmd: "repos",    desc: "GitHub repos" },
+    ],
+  },
+  {
+    id: "play",
+    label: "Play",
+    color: "#f4a261",
+    icon: "▶",
+    commands: [
+      { cmd: "game snake",  desc: "Snake game" },
+      { cmd: "game rocket", desc: "Rocket shooter" },
+      { cmd: "matrix",      desc: "Digital rain" },
+    ],
+  },
+  {
+    id: "devlog",
+    label: "Devlog",
+    color: "#a78bfa",
+    icon: "◆",
+    commands: [
+      { cmd: "blog",   desc: "List posts" },
+      { cmd: "secret", desc: "???" },
+    ],
+  },
+  {
+    id: "util",
+    label: "Utility",
+    color: "rgba(255,248,247,0.35)",
+    icon: "○",
+    commands: [
+      { cmd: "help",  desc: "This menu" },
+      { cmd: "clear", desc: "Clear terminal" },
+    ],
+  },
+];
+
+/* ── Command responses ───────────────────────────────────────── */
 function buildResponse(cmd, posts) {
   const c = cmd.trim().toLowerCase();
 
   if (c === "help") {
-    return [
-      { type: "spacer" },
-      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ AVAILABLE COMMANDS ══╗</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">about</span>       <span style="color:rgba(255,255,255,0.55)">— Who I am</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">skills</span>      <span style="color:rgba(255,255,255,0.55)">— Tech stack & expertise</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">experience</span>  <span style="color:rgba(255,255,255,0.55)">— Work history</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">repos</span>       <span style="color:rgba(255,255,255,0.55)">— GitHub repositories</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">contact</span>     <span style="color:rgba(255,255,255,0.55)">— Get in touch</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">neofetch</span>    <span style="color:rgba(255,255,255,0.55)">— System information</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">status</span>      <span style="color:rgba(255,255,255,0.55)">— Server metrics</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">matrix</span>      <span style="color:rgba(255,255,255,0.55)">— Enter the matrix</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game snake</span>  <span style="color:rgba(255,255,255,0.55)">— Play Snake</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game rocket</span> <span style="color:rgba(255,255,255,0.55)">— Play Rocket Shooter</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">blog</span>        <span style="color:rgba(255,255,255,0.55)">— List devlog posts</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">blog read</span>   <span style="color:rgba(255,255,255,0.55)">— Read a post  (blog read &lt;slug&gt;)</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">secret</span>      <span style="color:rgba(255,255,255,0.55)">— ???</span>` },
-      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">clear</span>       <span style="color:rgba(255,255,255,0.55)">— Clear terminal</span>` },
-      { type: "spacer" },
-    ];
+    return [{ type: "help-panel" }];
   }
 
   if (c === "about") {
@@ -88,7 +130,15 @@ function buildResponse(cmd, posts) {
       { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">I enjoy turning complex problems into clean,</span>` },
       { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">simple designs. Always shipping, always learning.</span>` },
       { type: "spacer" },
-      { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">→ Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('skills')">skills</span> to see my tech stack</span>` },
+      {
+        type: "chips",
+        label: "Explore →",
+        chips: [
+          { label: "skills", cmd: "skills" },
+          { label: "experience", cmd: "experience" },
+          { label: "contact", cmd: "contact" },
+        ],
+      },
       { type: "spacer" },
     ];
   }
@@ -117,6 +167,15 @@ function buildResponse(cmd, posts) {
       { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ SKILLS & TECH STACK ══╗</span>` },
       ...bars,
       { type: "spacer" },
+      {
+        type: "chips",
+        label: "Next →",
+        chips: [
+          { label: "experience", cmd: "experience" },
+          { label: "repos", cmd: "repos" },
+        ],
+      },
+      { type: "spacer" },
     ];
   }
 
@@ -138,6 +197,15 @@ function buildResponse(cmd, posts) {
       { type: "response", html: `  <span style="color:#fff;font-weight:600">Computer Science Student</span>` },
       { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Data structures, algorithms, software engineering</span>` },
       { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">fundamentals. Lots of late-night coding sessions.</span>` },
+      { type: "spacer" },
+      {
+        type: "chips",
+        label: "Next →",
+        chips: [
+          { label: "contact", cmd: "contact" },
+          { label: "skills", cmd: "skills" },
+        ],
+      },
       { type: "spacer" },
     ];
   }
@@ -175,10 +243,11 @@ function buildResponse(cmd, posts) {
     const cpu = (12 + Math.random() * 40).toFixed(1);
     const ram = (3.9 + Math.random() * 0.6).toFixed(2);
     const net = (15 + Math.random() * 50).toFixed(2);
+    const cpuColor = parseFloat(cpu) > 70 ? "#f87171" : parseFloat(cpu) > 40 ? "#fed931" : "#4ade80";
     return [
       { type: "spacer" },
       { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ SERVER STATUS ══╗</span>` },
-      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">CPU Load </span><span style="color:#fb7185;font-weight:700">${cpu}%</span>` },
+      { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">CPU Load </span><span style="color:${cpuColor};font-weight:700">${cpu}%</span>` },
       { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Memory   </span><span style="color:#4ade80;font-weight:700">${ram} GiB</span> <span style="color:rgba(255,255,255,0.3)">/ 8.00 GiB</span>` },
       { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Disk     </span><span style="color:#2dd4bf;font-weight:700">26.44 GiB</span> <span style="color:rgba(255,255,255,0.3)">/ 100 GiB</span>` },
       { type: "response", html: `  <span style="color:rgba(255,255,255,0.55)">Network  </span><span style="color:#fed931;font-weight:700">↓ ${net} KB/s</span>` },
@@ -208,7 +277,7 @@ function buildResponse(cmd, posts) {
     );
     return [
       { type: "spacer" },
-      ...rows.map((row, i) => ({
+      ...rows.map((row) => ({
         type: "response",
         html: row.split("").map((ch) => {
           const bright = Math.random() > 0.85;
@@ -226,11 +295,16 @@ function buildResponse(cmd, posts) {
 
   if (c.startsWith("game ") || c === "game") {
     const sub = c.split(" ")[1];
-    if (sub === "snake") return [{ type: "game", game: "snake" }];
+    if (sub === "snake")  return [{ type: "game", game: "snake" }];
     if (sub === "rocket") return [{ type: "game", game: "rocket" }];
-    return [
-      { type: "response", html: `<span style="color:rgba(255,255,255,0.55)">Available games: <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('game snake')">game snake</span>  <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('game rocket')">game rocket</span></span>` },
-    ];
+    return [{
+      type: "chips",
+      label: "Pick a game →",
+      chips: [
+        { label: "game snake",  cmd: "game snake" },
+        { label: "game rocket", cmd: "game rocket" },
+      ],
+    }];
   }
 
   if (c === "blog" || c === "blog ls") {
@@ -242,13 +316,17 @@ function buildResponse(cmd, posts) {
     ];
     return [
       { type: "spacer" },
-      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ DEVLOG ══╗</span>` },
+      { type: "response", html: `<span style="color:#a78bfa;font-weight:700">╔══ DEVLOG ══╗</span>` },
       ...list.map((p) => ({
         type: "response",
-        html: `  <span style="color:#fed931;font-family:var(--font-mono);font-size:0.62rem">${p.date}</span>  <span style="color:#f4a261;cursor:pointer;font-weight:600" onclick="window.__consoleExec('blog read ${p.slug}')">${p.slug}</span>  <span style="color:rgba(255,255,255,0.6)">${p.title}</span>`,
+        html: `  <span style="color:#fed931;font-family:var(--font-mono);font-size:0.62rem">${p.date}</span>  <span style="color:#a78bfa;cursor:pointer;font-weight:600" onclick="window.__consoleExec('blog read ${p.slug}')">${p.slug}</span>  <span style="color:rgba(255,255,255,0.6)">${p.title}</span>`,
       })),
       { type: "spacer" },
-      { type: "response", html: `<span style="color:rgba(255,255,255,0.35)">Use <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('blog read ${list[0]?.slug}')">blog read &lt;slug&gt;</span> to read a post.</span>` },
+      {
+        type: "chips",
+        label: "Read →",
+        chips: list.map((p) => ({ label: p.slug, cmd: `blog read ${p.slug}` })),
+      },
       { type: "spacer" },
     ];
   }
@@ -259,13 +337,14 @@ function buildResponse(cmd, posts) {
     const post = list.find((p) => p.slug === slug);
     if (!post) return [
       { type: "response", html: `<span style="color:#f87171">Post not found: <b>${slug}</b></span>` },
-      { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('blog')">blog</span> to list available posts.</span>` },
+      { type: "chips", label: "Try →", chips: [{ label: "blog", cmd: "blog" }] },
     ];
     return [
       { type: "spacer" },
       { type: "response", html: `<span style="color:rgba(255,255,255,0.35);font-family:var(--font-mono);font-size:0.58rem">── ${post.date} ──────────────────────────────</span>` },
       ...renderMarkdown(post.content),
       { type: "response", html: `<span style="color:rgba(255,255,255,0.35);font-family:var(--font-mono);font-size:0.58rem">────────────────────────────────────────────</span>` },
+      { type: "chips", label: "Back →", chips: [{ label: "blog", cmd: "blog" }] },
       { type: "spacer" },
     ];
   }
@@ -273,17 +352,107 @@ function buildResponse(cmd, posts) {
   if (c === "") return [];
 
   return [
-    { type: "response", html: `<span style="color:#f87171">Command not found: <b>${cmd}</b></span>` },
-    { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('help')">help</span> for available commands.</span>` },
+    { type: "response", html: `<span style="color:#f87171">Command not found: <span style="font-weight:700">${cmd}</span></span>` },
+    { type: "chips", label: "Try →", chips: [{ label: "help", cmd: "help" }] },
   ];
 }
 
+/* ── Welcome screen ──────────────────────────────────────────── */
 const WELCOME = [
-  { type: "welcome", text: `Welcome to Naim's Console Portfolio v4.0` },
-  { type: "hint", text: `Type 'help' or try 'neofetch' to get started.` },
+  { type: "banner" },
+  { type: "quickstart" },
   { type: "spacer" },
 ];
 
+/* ── HelpPanel component ─────────────────────────────────────── */
+function HelpPanel({ onExec }) {
+  return (
+    <div className="help-panel">
+      <div className="help-title">COMMAND REFERENCE</div>
+      {HELP_CATEGORIES.map((cat) => (
+        <div key={cat.id} className="help-category">
+          <div className="help-cat-header" style={{ color: cat.color }}>
+            <span className="help-cat-icon">{cat.icon}</span>
+            {cat.label}
+          </div>
+          <div className="help-cmds">
+            {cat.commands.map((item) => (
+              <button
+                key={item.cmd}
+                className="help-cmd-btn"
+                style={{ "--cat-color": cat.color }}
+                onClick={() => onExec(item.cmd)}
+              >
+                <span className="help-cmd-name" style={{ color: cat.color }}>{item.cmd}</span>
+                <span className="help-cmd-desc">{item.desc}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ── Chips component ─────────────────────────────────────────── */
+function Chips({ label, chips, onExec }) {
+  return (
+    <div className="chips-row">
+      {label && <span className="chips-label">{label}</span>}
+      {chips.map((chip) => (
+        <button key={chip.cmd} className="chip-btn" onClick={() => onExec(chip.cmd)}>
+          {chip.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* ── Banner component ────────────────────────────────────────── */
+function Banner({ onExec }) {
+  return (
+    <div className="console-banner">
+      <div className="banner-title">
+        <span style={{ color: "#a7c957" }}>AMAD</span>
+        <span style={{ color: "rgba(255,248,247,0.4)" }}>@</span>
+        <span style={{ color: "#2dd4bf" }}>console</span>
+        <span className="banner-blink">_</span>
+      </div>
+      <div className="banner-sub">Full-Stack Developer · Malaysia · v4.2</div>
+    </div>
+  );
+}
+
+/* ── Quickstart component ────────────────────────────────────── */
+function Quickstart({ onExec }) {
+  const picks = [
+    { label: "about",       cmd: "about",       color: "#a7c957" },
+    { label: "skills",      cmd: "skills",      color: "#61dafb" },
+    { label: "neofetch",    cmd: "neofetch",    color: "#a7c957" },
+    { label: "game snake",  cmd: "game snake",  color: "#f4a261" },
+    { label: "blog",        cmd: "blog",        color: "#a78bfa" },
+    { label: "secret",      cmd: "secret",      color: "rgba(255,248,247,0.3)" },
+  ];
+  return (
+    <div className="quickstart-row">
+      <span className="quickstart-label">Quick launch</span>
+      <div className="quickstart-chips">
+        {picks.map((p) => (
+          <button
+            key={p.cmd}
+            className="quickstart-chip"
+            style={{ "--chip-color": p.color }}
+            onClick={() => onExec(p.cmd)}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Main Console ────────────────────────────────────────────── */
 export default function Console() {
   const [lines, setLines] = useState(WELCOME);
   const [input, setInput] = useState("");
@@ -303,9 +472,7 @@ export default function Console() {
   }, []);
 
   useEffect(() => {
-    window.__consoleExec = (cmd) => {
-      processCommand(cmd);
-    };
+    window.__consoleExec = (cmd) => processCommand(cmd);
     return () => { delete window.__consoleExec; };
   }, []);
 
@@ -329,9 +496,7 @@ export default function Console() {
       { type: "cmd", text: trimmed },
       ...results,
     ]);
-    if (trimmed) {
-      setHistory((h) => [trimmed, ...h.slice(0, 49)]);
-    }
+    if (trimmed) setHistory((h) => [trimmed, ...h.slice(0, 49)]);
     setHistIdx(-1);
     scrollToBottom();
   };
@@ -356,11 +521,76 @@ export default function Console() {
     }
   };
 
-  const [activeGame, setActiveGame] = useState(null);
+  useEffect(() => { scrollToBottom(); }, [lines]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [lines]);
+  const renderLine = (line, i) => {
+    switch (line.type) {
+      case "spacer":
+        return <div key={i} style={{ height: 4 }} />;
+
+      case "banner":
+        return <Banner key={i} onExec={processCommand} />;
+
+      case "quickstart":
+        return <Quickstart key={i} onExec={processCommand} />;
+
+      case "welcome":
+        return <div key={i} className="console-line welcome">{line.text}</div>;
+
+      case "hint":
+        return <div key={i} className="console-line hint">{line.text}</div>;
+
+      case "cmd":
+        return (
+          <div key={i} className="console-line cmd">
+            <span className="prompt-symbol">❯</span>
+            <span className="cmd-text">{line.text}</span>
+          </div>
+        );
+
+      case "response":
+        return (
+          <div key={i} className="console-line response"
+            dangerouslySetInnerHTML={{ __html: line.html }} />
+        );
+
+      case "help-panel":
+        return (
+          <div key={i} className="console-line response">
+            <HelpPanel onExec={processCommand} />
+          </div>
+        );
+
+      case "chips":
+        return (
+          <div key={i} className="console-line response" style={{ paddingTop: 2 }}>
+            <Chips label={line.label} chips={line.chips} onExec={processCommand} />
+          </div>
+        );
+
+      case "game":
+        if (line.game === "snake") return (
+          <div key={i} className="console-line response">
+            <SnakeGame onExit={() => {
+              setLines((prev) => prev.filter((_, j) => j !== i));
+              inputRef.current?.focus();
+            }} />
+          </div>
+        );
+        if (line.game === "rocket") return (
+          <div key={i} className="console-line response">
+            <RocketGame onExit={() => {
+              setLines((prev) => prev.filter((_, j) => j !== i));
+              inputRef.current?.focus();
+            }} />
+          </div>
+        );
+        return null;
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <motion.div
@@ -373,9 +603,12 @@ export default function Console() {
       {/* Title bar */}
       <div className="console-titlebar">
         <div className="titlebar-dots">
-          <button className="titlebar-dot red" title="Close" onClick={(e) => { e.stopPropagation(); setLines(WELCOME); }} />
-          <button className="titlebar-dot yellow" title="Minimize" onClick={(e) => { e.stopPropagation(); setMinimized((v) => !v); }} />
-          <button className="titlebar-dot green" title="Maximize" onClick={(e) => e.stopPropagation()} />
+          <button className="titlebar-dot red" title="Close"
+            onClick={(e) => { e.stopPropagation(); setLines(WELCOME); }} />
+          <button className="titlebar-dot yellow" title="Minimize"
+            onClick={(e) => { e.stopPropagation(); setMinimized((v) => !v); }} />
+          <button className="titlebar-dot green" title="Maximize"
+            onClick={(e) => e.stopPropagation()} />
         </div>
         <div className="titlebar-center">
           <Terminal size={14} className="titlebar-icon" />
@@ -396,46 +629,9 @@ export default function Console() {
             style={{ flex: 1, minHeight: 0 }}
           >
             <div className="console-output" ref={outputRef}>
-              {lines.map((line, i) => {
-                if (line.type === "spacer") return <div key={i} style={{ height: 4 }} />;
-                if (line.type === "welcome") return (
-                  <div key={i} className="console-line welcome">{line.text}</div>
-                );
-                if (line.type === "hint") return (
-                  <div key={i} className="console-line hint">{line.text}</div>
-                );
-                if (line.type === "cmd") return (
-                  <div key={i} className="console-line cmd">
-                    <span className="prompt-symbol">❯</span>
-                    <span className="cmd-text">{line.text}</span>
-                  </div>
-                );
-                if (line.type === "response") return (
-                  <div key={i} className="console-line response" dangerouslySetInnerHTML={{ __html: line.html }} />
-                );
-                if (line.type === "game") {
-                  if (line.game === "snake") return (
-                    <div key={i} className="console-line response">
-                      <SnakeGame onExit={() => {
-                        setLines((prev) => prev.filter((_, j) => j !== i));
-                        inputRef.current?.focus();
-                      }} />
-                    </div>
-                  );
-                  if (line.game === "rocket") return (
-                    <div key={i} className="console-line response">
-                      <RocketGame onExit={() => {
-                        setLines((prev) => prev.filter((_, j) => j !== i));
-                        inputRef.current?.focus();
-                      }} />
-                    </div>
-                  );
-                }
-                return null;
-              })}
+              {lines.map(renderLine)}
             </div>
 
-            {/* Input */}
             <form onSubmit={handleSubmit} className="console-input-row">
               <span className="prompt-symbol">❯</span>
               <input
