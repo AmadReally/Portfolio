@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, ShieldCheck, Mail } from "lucide-react";
+import AsciiAvatar from "./AsciiAvatar";
 
 const GithubIcon = ({ size = 13 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -35,12 +36,10 @@ export default function ProfileCard({ profile }) {
           animate={{ rotate: 360 }}
           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
         />
-        <img
+        <AsciiAvatar
           src={profile?.avatar_url || `https://github.com/${GITHUB_USER}.png`}
           alt={profile?.name || "Naim Jamalullail"}
-          className="avatar-img"
-          width={72}
-          height={72}
+          fallbackSize={72}
         />
       </div>
 

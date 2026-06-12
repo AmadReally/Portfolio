@@ -724,3 +724,8 @@ ul, ol { list-style: none; }
 .activity-commit-detail { display: flex; gap: 8px; font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-light-secondary); opacity: 0.85; padding-left: 8px; margin-top: 4px; line-height: 1.2; }
 .activity-commit-sha { color: var(--terminal-green); font-weight: 600; background: rgba(167,201,87,0.15); padding: 0 4px; border-radius: 3px; flex-shrink: 0; }
 .activity-commit-msg { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── Now Playing Widget ─────────────────────────────────────── */
+.nowplaying-widget { padding: 12px 14px; }
+.nowplaying-widget .widget-header { letter-spacing: 0.08em; }
+.nowplaying-widget .header-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }

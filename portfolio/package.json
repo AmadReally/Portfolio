@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "fetch-github": "node scripts/fetch-github.js",
-    "dev": "node scripts/fetch-github.js && next dev",
-    "build": "node scripts/fetch-github.js && next build",
+    "dev": "node scripts/fetch-github.js && node scripts/fetch-posts.js && next dev",
+    "build": "node scripts/fetch-github.js && node scripts/fetch-posts.js && next build",
     "start": "next start"
   },
   "dependencies": {

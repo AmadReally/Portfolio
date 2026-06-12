@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Terminal as TermIcon, Server, Cpu, Monitor, Zap, Shield } from "lucide-react";
 import StatusBar from "./components/StatusBar";
 import ProfileCard from "./components/ProfileCard";
+import NowPlaying from "./components/NowPlaying";
 import ServerMonitor from "./components/ServerMonitor";
 import Console from "./components/Console";
 import ProjectsList from "./components/ProjectsList";
@@ -124,6 +125,8 @@ export default function Home() {
           {/* ═══ LEFT PANEL ═══ */}
           <div className={`left-panel mobile-tab-panel ${mobileTab === "profile" ? "mobile-tab-active" : ""}`}>
             <ProfileCard profile={data?.profile} />
+
+            <NowPlaying />
 
             <motion.div
               className="info-widget glass-card"

@@ -17,7 +17,42 @@ const NEOFETCH_ART = `<span style="color:#a7c957;font-weight:700">     /\\      
 <span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Engine:</span> <span style="color:#a78bfa">Next.js 16</span>
 <span style="color:#a7c957;font-weight:700">             </span><span style="color:rgba(255,255,255,0.5)">Uptime:</span> <span style="color:#4ade80">99.9%</span>`;
 
-function buildResponse(cmd) {
+function renderMdInline(text) {
+  let t = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  t = t.replace(/\*\*(.+?)\*\*/g, '<span style="color:#fff;font-weight:700">$1</span>');
+  t = t.replace(/\*(.+?)\*/g, '<em style="color:rgba(255,255,255,0.8)">$1</em>');
+  t = t.replace(/`([^`]+)`/g, '<span style="color:#a7c957;background:rgba(167,201,87,0.15);padding:0 3px;border-radius:3px;font-family:var(--font-mono)">$1</span>');
+  return t;
+}
+
+function renderMarkdown(md) {
+  const lines = md.split("\n");
+  const result = [];
+  let inCode = false;
+  let codeBuf = [];
+  for (const line of lines) {
+    if (line.startsWith("```")) {
+      if (inCode) {
+        result.push({ type: "response", html: `<span style="color:rgba(167,201,87,0.35);font-family:var(--font-mono)">┌─ code ─────────────────────────────────</span>` });
+        codeBuf.forEach((cl) => result.push({ type: "response", html: `<span style="color:#a7c957;font-family:var(--font-mono)">│</span> <span style="color:rgba(255,255,255,0.75);font-family:var(--font-mono)">${cl.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</span>` }));
+        result.push({ type: "response", html: `<span style="color:rgba(167,201,87,0.35);font-family:var(--font-mono)">└────────────────────────────────────────</span>` });
+        inCode = false; codeBuf = [];
+      } else { inCode = true; }
+      continue;
+    }
+    if (inCode) { codeBuf.push(line); continue; }
+    if (line.startsWith("# "))        result.push({ type: "response", html: `<span style="color:#a7c957;font-weight:700;font-size:0.9em">━━ ${renderMdInline(line.slice(2))} ━━</span>` });
+    else if (line.startsWith("## ")) result.push({ type: "response", html: `<span style="color:#2dd4bf;font-weight:700">${renderMdInline(line.slice(3))}</span>` });
+    else if (line.startsWith("### ")) result.push({ type: "response", html: `<span style="color:#f4a261;font-weight:600">${renderMdInline(line.slice(4))}</span>` });
+    else if (/^[-*] /.test(line))    result.push({ type: "response", html: `  <span style="color:#a7c957">▸</span> <span style="color:rgba(255,255,255,0.8)">${renderMdInline(line.slice(2))}</span>` });
+    else if (line.startsWith("---")) result.push({ type: "response", html: `<span style="color:rgba(255,255,255,0.15)">────────────────────────────────────────</span>` });
+    else if (line === "")            result.push({ type: "spacer" });
+    else                              result.push({ type: "response", html: `<span style="color:rgba(255,255,255,0.8)">${renderMdInline(line)}</span>` });
+  }
+  return result;
+}
+
+function buildResponse(cmd, posts) {
   const c = cmd.trim().toLowerCase();
 
   if (c === "help") {
@@ -34,6 +69,8 @@ function buildResponse(cmd) {
       { type: "response", html: `  <span style="color:#f4a261;font-weight:700">matrix</span>      <span style="color:rgba(255,255,255,0.55)">— Enter the matrix</span>` },
       { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game snake</span>  <span style="color:rgba(255,255,255,0.55)">— Play Snake</span>` },
       { type: "response", html: `  <span style="color:#f4a261;font-weight:700">game rocket</span> <span style="color:rgba(255,255,255,0.55)">— Play Rocket Shooter</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">blog</span>        <span style="color:rgba(255,255,255,0.55)">— List devlog posts</span>` },
+      { type: "response", html: `  <span style="color:#f4a261;font-weight:700">blog read</span>   <span style="color:rgba(255,255,255,0.55)">— Read a post  (blog read &lt;slug&gt;)</span>` },
       { type: "response", html: `  <span style="color:#f4a261;font-weight:700">secret</span>      <span style="color:rgba(255,255,255,0.55)">— ???</span>` },
       { type: "response", html: `  <span style="color:#f4a261;font-weight:700">clear</span>       <span style="color:rgba(255,255,255,0.55)">— Clear terminal</span>` },
       { type: "spacer" },
@@ -196,6 +233,43 @@ function buildResponse(cmd) {
     ];
   }
 
+  if (c === "blog" || c === "blog ls") {
+    const list = Array.isArray(posts) ? posts : [];
+    if (!list.length) return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.45)">No posts found. Check back later.</span>` },
+      { type: "spacer" },
+    ];
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ DEVLOG ══╗</span>` },
+      ...list.map((p) => ({
+        type: "response",
+        html: `  <span style="color:#fed931;font-family:var(--font-mono);font-size:0.62rem">${p.date}</span>  <span style="color:#f4a261;cursor:pointer;font-weight:600" onclick="window.__consoleExec('blog read ${p.slug}')">${p.slug}</span>  <span style="color:rgba(255,255,255,0.6)">${p.title}</span>`,
+      })),
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.35)">Use <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('blog read ${list[0]?.slug}')">blog read &lt;slug&gt;</span> to read a post.</span>` },
+      { type: "spacer" },
+    ];
+  }
+
+  if (c.startsWith("blog read ")) {
+    const slug = cmd.trim().slice("blog read ".length).trim();
+    const list = Array.isArray(posts) ? posts : [];
+    const post = list.find((p) => p.slug === slug);
+    if (!post) return [
+      { type: "response", html: `<span style="color:#f87171">Post not found: <b>${slug}</b></span>` },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.4)">Type <span style="color:#f4a261;cursor:pointer" onclick="window.__consoleExec('blog')">blog</span> to list available posts.</span>` },
+    ];
+    return [
+      { type: "spacer" },
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.35);font-family:var(--font-mono);font-size:0.58rem">── ${post.date} ──────────────────────────────</span>` },
+      ...renderMarkdown(post.content),
+      { type: "response", html: `<span style="color:rgba(255,255,255,0.35);font-family:var(--font-mono);font-size:0.58rem">────────────────────────────────────────────</span>` },
+      { type: "spacer" },
+    ];
+  }
+
   if (c === "") return [];
 
   return [
@@ -216,8 +290,17 @@ export default function Console() {
   const [minimized, setMinimized] = useState(false);
   const [history, setHistory] = useState([]);
   const [histIdx, setHistIdx] = useState(-1);
+  const postsRef = useRef([]);
   const outputRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+    fetch(basePath + "/api/posts.json")
+      .then((r) => r.json())
+      .then((d) => { if (Array.isArray(d)) postsRef.current = d; })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     window.__consoleExec = (cmd) => {
@@ -234,7 +317,7 @@ export default function Console() {
 
   const processCommand = (cmd) => {
     const trimmed = cmd.trim();
-    const results = buildResponse(trimmed);
+    const results = buildResponse(trimmed, postsRef.current);
 
     if (results[0]?.type === "clear") {
       setLines(WELCOME);
