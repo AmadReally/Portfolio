@@ -105,7 +105,12 @@ export default function Contributions({ repos, contributions, selectedDate, setS
                 >
                   {tooltip?.idx === i && !cell.isFuture && (
                     <div className={`contrib-tooltip ${align}`}>
-                      {cell.count ?? 0} commit{cell.count !== 1 ? "s" : ""} · {cell.date}
+                      <span className="contrib-tooltip-date">
+                        {new Date(cell.date + "T00:00:00").toLocaleDateString("en-MY", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}
+                      </span>
+                      <span className="contrib-tooltip-count">
+                        {cell.count ?? 0} commit{(cell.count ?? 0) !== 1 ? "s" : ""}
+                      </span>
                     </div>
                   )}
                 </div>
