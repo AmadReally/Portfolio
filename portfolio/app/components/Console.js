@@ -147,21 +147,23 @@ function buildResponse(cmd, posts) {
     const skills = [
       { name: "JavaScript / TypeScript", pct: 92, color: "#f7df1e" },
       { name: "React / Next.js",         pct: 88, color: "#61dafb" },
-      { name: "Node.js / Express",        pct: 82, color: "#68a063" },
-      { name: "Python",                   pct: 75, color: "#3572a5" },
-      { name: "HTML / CSS / Tailwind",    pct: 90, color: "#e34c26" },
-      { name: "Git / GitHub",             pct: 85, color: "#f05032" },
-      { name: "SQL / NoSQL",              pct: 72, color: "#2dd4bf" },
-      { name: "Docker / CI-CD",           pct: 65, color: "#a78bfa" },
+      { name: "HTML / CSS / Tailwind",   pct: 90, color: "#e34c26" },
+      { name: "Node.js / Express",       pct: 82, color: "#68a063" },
+      { name: "Git / GitHub",            pct: 85, color: "#f05032" },
+      { name: "Python",                  pct: 75, color: "#3572a5" },
+      { name: "SQL / NoSQL",             pct: 72, color: "#2dd4bf" },
+      { name: "Docker / CI-CD",          pct: 65, color: "#a78bfa" },
     ];
-    const bars = skills.map((s) => {
-      const filled = Math.round(s.pct / 5);
-      const bar = "█".repeat(filled) + "░".repeat(20 - filled);
-      return {
-        type: "response",
-        html: `  <span style="color:${s.color};font-weight:600">${s.name.padEnd(28)}</span> <span style="color:${s.color};letter-spacing:-1px">${bar}</span> <span style="color:rgba(255,255,255,0.5)">${s.pct}%</span>`,
-      };
-    });
+    const bars = skills.map((s) => ({
+      type: "response",
+      html: `<div style="display:flex;align-items:center;gap:8px;padding:2px 0">
+        <span style="color:${s.color};font-weight:600;font-size:0.68rem;min-width:168px;flex-shrink:0">${s.name}</span>
+        <div style="flex:1;height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;min-width:40px">
+          <div style="width:${s.pct}%;height:100%;background:${s.color};border-radius:3px;box-shadow:0 0 8px ${s.color}55"></div>
+        </div>
+        <span style="color:rgba(255,255,255,0.45);font-size:0.6rem;min-width:28px;text-align:right;font-family:var(--font-mono)">${s.pct}%</span>
+      </div>`,
+    }));
     return [
       { type: "spacer" },
       { type: "response", html: `<span style="color:#a7c957;font-weight:700">╔══ SKILLS & TECH STACK ══╗</span>` },
